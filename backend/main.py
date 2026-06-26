@@ -40,8 +40,14 @@ def get_db():
 
 # --- Static Frontend Serving ---
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+print(f"DEBUG: __file__ is {__file__}", flush=True)
+print(f"DEBUG: frontend_path is {frontend_path}", flush=True)
+print(f"DEBUG: frontend_path exists: {os.path.exists(frontend_path)}", flush=True)
 if os.path.exists(frontend_path):
+    print(f"DEBUG: Files in frontend_path: {os.listdir(frontend_path)}", flush=True)
     app.mount("/app", StaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    print(f"DEBUG: Root files: {os.listdir(os.path.dirname(os.path.dirname(__file__)))}", flush=True)
 
 @app.get("/")
 def read_root():
