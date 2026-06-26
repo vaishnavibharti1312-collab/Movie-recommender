@@ -7,3 +7,5 @@ vaderSentiment
 pydantic
 python-multipart
 cors
+google-generativeai
+

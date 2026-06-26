@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize movie list for ad selector dropdown
     await loadAdMovieOptions();
+    
+    // Fetch chatbot AI agent status
+    checkChatbotStatus();
 });
 
 function updateClock() {
@@ -30,6 +33,39 @@ function updateClock() {
     let minutes = now.getMinutes().toString().padStart(2, '0');
     const timeSpan = document.getElementById('system-time');
     if (timeSpan) timeSpan.innerText = `${hours}:${minutes}`;
+}
+
+async function checkChatbotStatus() {
+    try {
+        const response = await fetch(`${API_URL}/chat/status`);
+        if (response.ok) {
+            const data = await response.json();
+            const viewerBadge = document.getElementById('viewer-chat-status');
+            const bizBadge = document.getElementById('biz-chat-status');
+            
+            if (data.agent_active) {
+                if (viewerBadge) {
+                    viewerBadge.innerText = 'AI Agent';
+                    viewerBadge.className = 'status-badge active';
+                }
+                if (bizBadge) {
+                    bizBadge.innerText = 'AI Agent';
+                    bizBadge.className = 'status-badge active';
+                }
+            } else {
+                if (viewerBadge) {
+                    viewerBadge.innerText = 'Local';
+                    viewerBadge.className = 'status-badge fallback';
+                }
+                if (bizBadge) {
+                    bizBadge.innerText = 'Local';
+                    bizBadge.className = 'status-badge fallback';
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error checking chatbot status:', err);
+    }
 }
 
 // 1. Profile Selector Loading

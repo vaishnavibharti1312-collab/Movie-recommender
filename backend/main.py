@@ -381,8 +381,25 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
 
 # --- Chatbot APIs with Advanced AI/RAG Intent Routing ---
 
+@app.get("/chat/status")
+def get_chat_status():
+    from backend import agent
+    return {
+        "agent_active": agent.is_agent_active(),
+        "mode": "Agentic RAG Mode (Gemini AI)" if agent.is_agent_active() else "Local Intent Mode (Rule-based)"
+    }
+
 @app.post("/chat/user")
 def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_db)):
+    from backend import agent
+    if agent.is_agent_active():
+        try:
+            response_text = agent.run_agentic_chat(query, is_business_analyst=False, user_id=user_id)
+            return {"response": response_text}
+        except Exception as e:
+            # Fallback to local rule engine on error
+            pass
+            
     query_lower = query.lower()
     
     # Intent 0: Combined Platform + Genre search
@@ -557,6 +574,15 @@ def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_
 
 @app.post("/chat/company")
 def company_chatbot(query: str, db: Session = Depends(get_db)):
+    from backend import agent
+    if agent.is_agent_active():
+        try:
+            response_text = agent.run_agentic_chat(query, is_business_analyst=True)
+            return {"response": response_text}
+        except Exception as e:
+            # Fallback to local rule engine on error
+            pass
+            
     query_lower = query.lower()
     
     # Intent 1: Genre Performance & Forecasting
