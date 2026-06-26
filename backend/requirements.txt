@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+pandas
+scikit-learn
+vaderSentiment
+pydantic
+python-multipart
+cors

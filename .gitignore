@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+data_pipeline/dataset1.csv
+data_pipeline/dataset2.csv
+ott_platform.zip

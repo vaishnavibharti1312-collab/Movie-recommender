@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered OTT Content Intelligence Platform</title>
+    <meta name="description" content="A complete AI-driven SaaS intelligence platform for OTT users and business analytics.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-mode">
+
+    <!-- Main Container -->
+    <div class="app-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-panel">
+            <div class="sidebar-brand">
+                <span class="brand-icon">✨</span>
+                <div class="brand-text">
+                    <h2>OTT INTELLIGENCE</h2>
+                    <span class="brand-tag">AI-Powered SaaS</span>
+                </div>
+            </div>
+
+            <!-- Mode Selector Switcher -->
+            <div class="mode-switcher-container">
+                <span class="mode-label">Active Workspace</span>
+                <div class="mode-buttons glass-panel">
+                    <button id="btn-mode-viewer" class="mode-btn active" onclick="switchSystemMode('viewer')">
+                        Viewer Portal
+                    </button>
+                    <button id="btn-mode-business" class="mode-btn" onclick="switchSystemMode('business')">
+                        Business BI Suite
+                    </button>
+                </div>
+            </div>
+
+            <!-- User Profile Selector (Simulate personalization) -->
+            <div class="profile-selector-container" id="sidebar-profile-box">
+                <label for="user-profile-select">Viewing Profile</label>
+                <select id="user-profile-select" onchange="onUserProfileChange()" class="glass-input">
+                    <!-- Populated dynamically via JS -->
+                </select>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav">
+                <!-- Viewer Mode Links -->
+                <div id="nav-group-viewer" class="nav-group active">
+                    <span class="nav-header">Viewer Discovery</span>
+                    <button class="nav-link active" onclick="showSubPage('viewer-discover', event)">
+                        <span class="nav-icon">🎬</span> Discover Content
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('viewer-recs', event)">
+                        <span class="nav-icon">🎯</span> Recommendations
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('viewer-chatbot', event)">
+                        <span class="nav-icon">💬</span> Movie Assistant
+                    </button>
+                </div>
+
+                <!-- Business Mode Links -->
+                <div id="nav-group-business" class="nav-group">
+                    <span class="nav-header">Enterprise BI Suite</span>
+                    <button class="nav-link" onclick="showSubPage('biz-overview', event)">
+                        <span class="nav-icon">📊</span> Executive KPI Overview
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('biz-content', event)">
+                        <span class="nav-icon">📈</span> Content Performance
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('biz-churn', event)">
+                        <span class="nav-icon">👥</span> Subscriber Churn Hub
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('biz-trends', event)">
+                        <span class="nav-icon">🔮</span> Market Trends & Forecast
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('biz-ads', event)">
+                        <span class="nav-icon">📢</span> Ad Placement Simulator
+                    </button>
+                    <button class="nav-link" onclick="showSubPage('biz-chatbot', event)">
+                        <span class="nav-icon">🤖</span> AI Business Analyst
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Footer Details -->
+            <div class="sidebar-footer">
+                <p>System Version: 2.1.0-SaaS</p>
+                <p>Local Time: <span id="system-time">21:40</span></p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Global Top Bar -->
+            <header class="top-bar glass-panel">
+                <div class="top-bar-left">
+                    <h1 id="page-title">Discover Content</h1>
+                    <p id="page-subtitle" class="text-secondary">Explore the unified OTT catalog with intelligent discovery</p>
+                </div>
+                <div class="top-bar-right">
+                    <div class="system-status">
+                        <span class="status-dot online"></span>
+                        <span class="status-text text-secondary">Backend Services Online</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- SUB-PAGES WRAPPER -->
+            <div class="page-container">
+
+                <!-- 1. VIEWER DISCOVER -->
+                <div id="page-viewer-discover" class="sub-page active">
+                    <!-- Advanced Filters Panel -->
+                    <div class="filter-panel glass-panel mb-4">
+                        <div class="filter-row">
+                            <div class="filter-group flex-2">
+                                <label for="filter-title">Search Title</label>
+                                <input type="text" id="filter-title" placeholder="Type movie title..." class="glass-input" oninput="triggerSearch()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filter-genre">Genre</label>
+                                <select id="filter-genre" class="glass-input" onchange="triggerSearch()">
+                                    <option value="">All Genres</option>
+                                    <option value="Action">Action</option>
+                                    <option value="Sci-Fi">Sci-Fi</option>
+                                    <option value="Drama">Drama</option>
+                                    <option value="Comedy">Comedy</option>
+                                    <option value="Romance">Romance</option>
+                                    <option value="Thriller">Thriller</option>
+                                    <option value="Horror">Horror</option>
+                                    <option value="Animation">Animation</option>
+                                    <option value="Adventure">Adventure</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filter-platform">OTT Platform</label>
+                                <select id="filter-platform" class="glass-input" onchange="triggerSearch()">
+                                    <option value="">All Platforms</option>
+                                    <option value="Netflix">Netflix</option>
+                                    <option value="Amazon Prime">Amazon Prime</option>
+                                    <option value="Disney+ Hotstar">Disney+ Hotstar</option>
+                                    <option value="Zee5">Zee5</option>
+                                    <option value="SonyLIV">SonyLIV</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="filter-lang">Language</label>
+                                <select id="filter-lang" class="glass-input" onchange="triggerSearch()">
+                                    <option value="">All Languages</option>
+                                    <option value="English">English</option>
+                                    <option value="Hindi">Hindi</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Korean">Korean</option>
+                                    <option value="Japanese">Japanese</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Movies Library Grid -->
+                    <div id="movies-discover-grid" class="movie-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 2. VIEWER RECOMMENDATIONS -->
+                <div id="page-viewer-recs" class="sub-page">
+                    <div class="alert-banner glass-panel mb-4">
+                        <span class="alert-icon">🎯</span>
+                        <div class="alert-text">
+                            <h3>Personalized Match Recommendations</h3>
+                            <p>Powered by our Hybrid Recommendation engine combining content cosine similarity (genres + synopsis) and your profile preferences.</p>
+                        </div>
+                    </div>
+
+                    <div class="recs-section mb-4">
+                        <h2 class="section-title">Top Personalized Matches</h2>
+                        <div id="movies-personalized-grid" class="movie-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="recs-section">
+                        <h2 class="section-title">Trending Hits Across Platforms</h2>
+                        <div id="movies-trending-grid" class="movie-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. VIEWER CHATBOT -->
+                <div id="page-viewer-chatbot" class="sub-page">
+                    <div class="chatbot-full-layout glass-panel">
+                        <div class="chatbot-sidebar">
+                            <h3>Movie Assistant</h3>
+                            <p class="text-secondary">Ask me anything about movies, streaming platforms, or ratings.</p>
+                            
+                            <div class="suggested-queries">
+                                <span class="query-header">Suggested Prompts</span>
+                                <button class="query-btn" onclick="sendQuickQuery('Recommend me a thriller movie.')">Recommend a Thriller</button>
+                                <button class="query-btn" onclick="sendQuickQuery('Which movies are available on Netflix?')">Movies on Netflix</button>
+                                <button class="query-btn" onclick="sendQuickQuery('Tell me about Inception.')">Tell me about Inception</button>
+                                <button class="query-btn" onclick="sendQuickQuery('Suggest movies similar to Interstellar.')">Movies like Interstellar</button>
+                            </div>
+                        </div>
+                        <div class="chatbot-main">
+                            <div class="chat-display" id="viewer-chat-display">
+                                <div class="message bot">
+                                    Hello! I'm your movie discovery bot. Ask me to find movies, check OTT availability, or get summaries!
+                                </div>
+                            </div>
+                            <div class="chat-form">
+                                <input type="text" id="viewer-chat-input" placeholder="Search for movies, ask for recommendations..." onkeypress="handleViewerChatKey(event)">
+                                <button onclick="sendViewerChat()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. BUSINESS BI OVERVIEW -->
+                <div id="page-biz-overview" class="sub-page">
+                    <!-- KPI Cards Grid -->
+                    <div class="grid-4 mb-4">
+                        <div class="glass-panel kpi-card">
+                            <div class="kpi-icon blue">🎬</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Content Library</span>
+                                <h3 class="kpi-value" id="kpi-movies">0</h3>
+                                <span class="kpi-change positive">Active Catalog</span>
+                            </div>
+                        </div>
+                        <div class="glass-panel kpi-card">
+                            <div class="kpi-icon purple">👥</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Active Users</span>
+                                <h3 class="kpi-value" id="kpi-users">0</h3>
+                                <span class="kpi-change positive">48 Viewers</span>
+                            </div>
+                        </div>
+                        <div class="glass-panel kpi-card">
+                            <div class="kpi-icon yellow">⭐</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Average Catalog Rating</span>
+                                <h3 class="kpi-value" id="kpi-rating">0.0</h3>
+                                <span class="kpi-change positive">Out of 10</span>
+                            </div>
+                        </div>
+                        <div class="glass-panel kpi-card">
+                            <div class="kpi-icon green">💬</div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Overall Sentiment</span>
+                                <h3 class="kpi-value" id="kpi-sentiment">0%</h3>
+                                <span class="kpi-change positive">Positive Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2 mb-4">
+                        <!-- Churn Risk Widget -->
+                        <div class="glass-panel analytics-widget">
+                            <h3>Subscriber Churn Risk Summary</h3>
+                            <p class="text-secondary mb-3">Breakdown of subscriber cancellations risk level</p>
+                            <div class="churn-breakdown-row">
+                                <div class="churn-stat text-danger">
+                                    <span class="churn-count" id="widget-churn-high">0</span>
+                                    <span class="churn-lbl">High Risk</span>
+                                </div>
+                                <div class="churn-stat text-warning">
+                                    <span class="churn-count" id="widget-churn-med">0</span>
+                                    <span class="churn-lbl">Medium Risk</span>
+                                </div>
+                                <div class="churn-stat text-success">
+                                    <span class="churn-count" id="widget-churn-low">0</span>
+                                    <span class="churn-lbl">Low Risk</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-container mt-3">
+                                <div class="progress-bar danger" id="churn-progress-high" style="width: 0%"></div>
+                                <div class="progress-bar warning" id="churn-progress-med" style="width: 0%"></div>
+                                <div class="progress-bar success" id="churn-progress-low" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Top Performers Widget -->
+                        <div class="glass-panel analytics-widget">
+                            <h3>Trending Content Highlight</h3>
+                            <p class="text-secondary mb-3">Top 3 movies by platform popularity</p>
+                            <div class="top-movies-list" id="widget-top-movies">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. BUSINESS CONTENT PERFORMANCE -->
+                <div id="page-biz-content" class="sub-page">
+                    <!-- Charts Row -->
+                    <div class="chart-row mb-4">
+                        <div class="glass-panel chart-container">
+                            <h3>Catalog Distribution by Genre</h3>
+                            <canvas id="chart-genre-distribution"></canvas>
+                        </div>
+                        <div class="glass-panel chart-container">
+                            <h3>Average Rating by Genre</h3>
+                            <canvas id="chart-genre-ratings"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-row mb-4">
+                        <div class="glass-panel chart-container">
+                            <h3>OTT Platform Coverage</h3>
+                            <canvas id="chart-platform-distribution"></canvas>
+                        </div>
+                        <div class="glass-panel chart-container">
+                            <h3>Audience Review Sentiment</h3>
+                            <canvas id="chart-sentiment-distribution"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. BUSINESS SUBSCRIBER CHURN HUB -->
+                <div id="page-biz-churn" class="sub-page">
+                    <div class="alert-banner glass-panel mb-4">
+                        <span class="alert-icon">🕵️</span>
+                        <div class="alert-text">
+                            <h3>ML subscriber Churn Analytics</h3>
+                            <p>Our Random Forest model processes logins, watch time, complaints, and billing patterns to flag users likely to unsubscribe.</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel mb-4" style="overflow-x: auto;">
+                        <div class="table-header">
+                            <h3>High-Risk Subscribers List</h3>
+                            <span class="badge danger" id="churn-high-risk-badge">0 Users Flagged</span>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subscriber ID</th>
+                                    <th>Name</th>
+                                    <th>Churn Prob</th>
+                                    <th>Watch Time (Hrs)</th>
+                                    <th>Logins / Month</th>
+                                    <th>Monthly Charge</th>
+                                    <th>Support Contacts</th>
+                                    <th>Retention Campaign</th>
+                                </tr>
+                            </thead>
+                            <tbody id="churn-subscribers-table">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 7. BUSINESS MARKET TRENDS -->
+                <div id="page-biz-trends" class="sub-page">
+                    <div class="chart-row mb-4">
+                        <div class="glass-panel chart-container flex-2">
+                            <h3>Google Trends Genre Interest Forecasting</h3>
+                            <p class="text-secondary mb-3">12-Month Historical vs. 3-Month Linear Regression Forecast</p>
+                            <canvas id="chart-genre-forecasting"></canvas>
+                        </div>
+                        <div class="glass-panel chart-container">
+                            <h3>Acquisition Recommendations</h3>
+                            <div class="recommendations-box">
+                                <div class="rec-section mb-3">
+                                    <span class="rec-header text-success">🟢 PRIORITIZE INVESTMENT</span>
+                                    <div class="badge-list mt-2" id="trends-growing-genres">
+                                        <!-- badges -->
+                                    </div>
+                                </div>
+                                <div class="rec-section mb-3">
+                                    <span class="rec-header text-danger">🔴 DIVEST / SCALE BACK</span>
+                                    <div class="badge-list mt-2" id="trends-declining-genres">
+                                        <!-- badges -->
+                                    </div>
+                                </div>
+                                <div class="rec-section">
+                                    <span class="rec-header text-secondary">DECISION STRATEGY</span>
+                                    <p class="mt-2 text-secondary" style="font-size: 0.9rem; line-height: 1.4;" id="trends-strategy-text">
+                                        Loading investment advisory insights...
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. BUSINESS AD PLACEMENT SIMULATOR -->
+                <div id="page-biz-ads" class="sub-page">
+                    <div class="ad-placement-layout">
+                        <!-- Movie Selector -->
+                        <div class="glass-panel ad-selector-panel">
+                            <h3>Ad Targeting Simulator</h3>
+                            <p class="text-secondary mb-3">Select a content title to calculate ideal advertisement campaigns matching its profile.</p>
+                            <div class="filter-group">
+                                <label for="ad-movie-select">Select Movie Title</label>
+                                <select id="ad-movie-select" class="glass-input" onchange="runAdSimulation()">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            
+                            <div id="ad-movie-details" class="mt-4" style="display: none;">
+                                <div class="meta-row mb-2">
+                                    <span class="badge" id="ad-movie-genre">Sci-Fi</span>
+                                    <span class="badge" id="ad-movie-rating">⭐ 8.5</span>
+                                    <span class="badge" id="ad-movie-runtime">140 min</span>
+                                </div>
+                                <h4 class="mb-1" id="ad-movie-title">Inception</h4>
+                                <p class="text-secondary" style="font-size: 0.9rem;" id="ad-movie-desc">Overview details...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Recommendations Output -->
+                        <div class="glass-panel ad-results-panel">
+                            <h3>Optimized Ad Campaigns</h3>
+                            <div class="campaign-list" id="ad-campaigns-list">
+                                <p class="text-secondary">Please select a movie to run optimization models.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 9. BUSINESS AI BUSINESS ANALYST -->
+                <div id="page-biz-chatbot" class="sub-page">
+                    <div class="chatbot-full-layout glass-panel">
+                        <div class="chatbot-sidebar">
+                            <h3>Enterprise AI Analyst</h3>
+                            <p class="text-secondary">Query catalog operations, subscription risks, and licensing strategies.</p>
+                            
+                            <div class="suggested-queries">
+                                <span class="query-header">Suggested BI Prompts</span>
+                                <button class="query-btn" onclick="sendBizQuickQuery('Which genre is performing best?')">Genre Growth Forecast</button>
+                                <button class="query-btn" onclick="sendBizQuickQuery('Which users are likely to churn?')">Subscriber Churn Risk</button>
+                                <button class="query-btn" onclick="sendBizQuickQuery('What is the sentiment around action movies?')">Catalog Review Sentiment</button>
+                                <button class="query-btn" onclick="sendBizQuickQuery('Suggest content strategy for next quarter.')">Licensing Strategy</button>
+                            </div>
+                        </div>
+                        <div class="chatbot-main">
+                            <div class="chat-display" id="biz-chat-display">
+                                <div class="message bot">
+                                    Hello! I am your AI Business Analyst. You can ask me to run analytics, forecast trends, summarize customer churn risks, or suggest content investments.
+                                </div>
+                            </div>
+                            <div class="chat-form">
+                                <input type="text" id="biz-chat-input" placeholder="Query platform KPIs, churn reasons, trend forecasts..." onkeypress="handleBizChatKey(event)">
+                                <button onclick="sendBizChat()">Query</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MOVIE DETAILS MODAL -->
+    <div id="movie-modal" class="modal-overlay" onclick="closeMovieModal(event)">
+        <div class="modal-content glass-panel">
+            <button class="close-modal-btn" onclick="closeMovieModal(null)">✕</button>
+            <div class="modal-body-layout" id="modal-body-content">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="app.js"></script>
+</body>
+</html>
