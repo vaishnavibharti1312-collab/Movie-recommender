@@ -50,8 +50,16 @@ def search_movies_db(
             query = query.filter(models.Movie.genres.like(f"%{genre}%"))
             
         if platform:
+            db_platform = platform
+            p_lower = platform.lower()
+            if "netflix" in p_lower: db_platform = "Netflix"
+            elif "amazon" in p_lower or "prime" in p_lower: db_platform = "Amazon Prime"
+            elif "disney" in p_lower or "hotstar" in p_lower: db_platform = "Disney+ Hotstar"
+            elif "zee" in p_lower: db_platform = "Zee5"
+            elif "sony" in p_lower or "liv" in p_lower: db_platform = "SonyLIV"
+            
             query = query.join(models.MoviePlatform).join(models.Platform).filter(
-                models.Platform.platform_name.like(f"%{platform}%")
+                models.Platform.platform_name.like(f"%{db_platform}%")
             )
             
         if min_rating:

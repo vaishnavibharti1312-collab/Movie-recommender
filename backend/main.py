@@ -402,13 +402,18 @@ def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_
             
     query_lower = query.lower()
     
+    def resolve_platform(q: str):
+        q = q.lower()
+        if "netflix" in q: return "Netflix"
+        if "amazon" in q or "prime" in q: return "Amazon Prime"
+        if "disney" in q or "hotstar" in q: return "Disney+ Hotstar"
+        if "zee" in q: return "Zee5"
+        if "sony" in q or "liv" in q: return "SonyLIV"
+        return None
+
     # Intent 0: Combined Platform + Genre search
     # E.g. "horror movies on Netflix", "action movies on Zee5"
-    matched_platform = None
-    for p in ["netflix", "amazon prime", "disney+ hotstar", "zee5", "sonyliv"]:
-        if p in query_lower:
-            matched_platform = p
-            break
+    matched_platform = resolve_platform(query_lower)
             
     matched_genre = None
     for g in ["action", "sci-fi", "drama", "comedy", "romance", "horror", "thriller", "animation", "adventure"]:
@@ -426,10 +431,10 @@ def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_
             rec_list = []
             for m in movies:
                 rec_list.append(f"<strong>{m.title}</strong> (⭐ {m.vote_average:.1f})")
-            response = f"Here are the top-rated <strong>{matched_genre.capitalize()}</strong> movies available on <strong>{matched_platform.title()}</strong>:<br>• " + "<br>• ".join(rec_list)
+            response = f"Here are the top-rated <strong>{matched_genre.capitalize()}</strong> movies available on <strong>{matched_platform}</strong>:<br>• " + "<br>• ".join(rec_list)
             return {"response": response}
         else:
-            response = f"I couldn't find any <strong>{matched_genre.capitalize()}</strong> movies available on <strong>{matched_platform.title()}</strong> in our catalog."
+            response = f"I couldn't find any <strong>{matched_genre.capitalize()}</strong> movies available on <strong>{matched_platform}</strong> in our catalog."
             return {"response": response}
             
     # Intent 1: Similarity-based recommendation
@@ -460,13 +465,9 @@ def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_
                 
     # Intent 2: Platform Availability search
     # E.g. "Is Inception on Netflix?", "Which movies are available on Zee5?"
-    if "available on" in query_lower or "is " in query_lower or "which movies" in query_lower or "on netflix" in query_lower or "on prime" in query_lower or "on hotstar" in query_lower or "on zee5" in query_lower or "on sonyliv" in query_lower:
+    if "available on" in query_lower or "is " in query_lower or "which movies" in query_lower or "on netflix" in query_lower or "on prime" in query_lower or "on hotstar" in query_lower or "on zee5" in query_lower or "on sonyliv" in query_lower or "on sony" in query_lower or "on liv" in query_lower:
         # Check if query asks for a specific platform's list
-        matched_platform = None
-        for p in ["netflix", "amazon prime", "disney+ hotstar", "zee5", "sonyliv"]:
-            if p in query_lower:
-                matched_platform = p
-                break
+        matched_platform = resolve_platform(query_lower)
         
         # Check if query asks about a specific movie title
         matched_movie = None
@@ -483,7 +484,7 @@ def user_chatbot(query: str, user_id: int = Query(3), db: Session = Depends(get_
         elif matched_platform and not any(word in query_lower for word in ["is", "about", "similar"]):
             movies_on_plat = db.query(models.Movie).join(models.MoviePlatform).join(models.Platform).filter(models.Platform.platform_name.like(f"%{matched_platform}%")).limit(5).all()
             titles = [f"'{m.title}'" for m in movies_on_plat]
-            response = f"Here are some top-rated movies available on <strong>{matched_platform.title()}</strong>:<br>• " + "<br>• ".join(titles)
+            response = f"Here are some top-rated movies available on <strong>{matched_platform}</strong>:<br>• " + "<br>• ".join(titles)
             return {"response": response}
         else:
             # Asked about specific movie availability but not found
